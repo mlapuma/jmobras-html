@@ -1062,3 +1062,19 @@ span.padding_left_15 {
 .margin_top90 {
     margin-top: 90px;
 }
+
+.btn-send {
+  background-color: #ff7a1f;   /* laranja */
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;        /* deixa redondo */
+  padding: 10px 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-send:hover {
+  background-color: #e66a14;  /* tom mais escuro no hover */
+}
