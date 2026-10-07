@@ -1,0 +1,36 @@
+name: Check mobile and desktop layout
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: browser-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  browser-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/jmo-browser" --no-package-lock --no-audit --no-fund playwright@1.62.1
+          "$RUNNER_TEMP/jmo-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Check pages at 390, 768 and 1440 pixels
+        env:
+          NODE_PATH: ${{ runner.temp }}/jmo-browser/node_modules
+        run: node scripts/check-browser.cjs
+      - name: Save screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-check-screenshots
+          path: browser-check-results/
+          retention-days: 7
+          if-no-files-found: ignore
