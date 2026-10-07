@@ -74,15 +74,43 @@ async function verifyMenu(page, width) {
       await page.screenshot({ path: path.join(screenshots, 'home-' + width + '.png') });
       await verifyMenu(page, width);
      }
-     if (pathname === 'contact.html') {
-      const blocked = [];
-      await page.route('https://formsubmit.co/**', route => {
-       blocked.push(route.request().url()); return route.abort();
+     if (pathname === 'contact.html' || !pathname) {
+      const requests = [];
+      await page.route('https://formsubmit.co/**', async route => {
+       requests.push({ method: route.request().method(), data: route.request().postData() });
+       await route.fulfill({ status: 200, contentType: 'text/html',
+        body: '<html><body><h1>Local simulated submission</h1></body></html>' });
       });
-      await page.getByRole('button', { name: 'Enviar solicitação' }).click();
-      assert.equal(blocked.length, 0, 'Empty form attempted a network submission');
-      assert.ok(await page.locator('input:invalid, textarea:invalid').count() > 0);
+      const form = page.locator('.contact-form');
+      const submit = form.getByRole('button', { name: 'Enviar solicitação' });
+      await submit.click();
+      assert.equal(requests.length, 0, 'Empty form attempted submission');
+      assert.ok(await form.locator('input:invalid, textarea:invalid').count() > 0);
+      await form.getByLabel('Nome', { exact: true }).fill('Teste automatizado');
+      await form.getByLabel('Mensagem', { exact: true }).fill('Verificação local. Não enviar contato real.');
+      await form.getByLabel('E-mail', { exact: true }).fill('email-invalido');
+      await submit.click();
+      assert.equal(requests.length, 0, 'Malformed email attempted submission');
+      assert.equal(await form.getByLabel('E-mail', { exact: true }).evaluate(el =>
+       el.validity.typeMismatch), true);
+      await form.getByLabel('E-mail', { exact: true }).fill('teste@example.invalid');
+      await Promise.all([
+       page.waitForURL('https://formsubmit.co/**'),
+       submit.click()
+      ]);
+      assert.equal(requests.length, 1, 'Valid form did not attempt exactly one submission');
+      assert.equal(requests[0].method, 'POST');
+      const payload = new URLSearchParams(requests[0].data);
+      assert.equal(payload.get('nome'), 'Teste automatizado');
+      assert.equal(payload.get('email'), 'teste@example.invalid');
+      assert.equal(payload.get('mensagem'), 'Verificação local. Não enviar contato real.');
+      assert.equal(payload.get('_honey'), '');
+      assert.equal(payload.get('_captcha'), 'true');
+      assert.equal(payload.get('_next'), 'https://www.jmobras.com.br/obrigado.html');
+      assert.equal(payload.get('_subject'), 'Novo contato pelo site JM & Obras');
+      assert.equal(await page.locator('h1').textContent(), 'Local simulated submission');
       await page.unroute('https://formsubmit.co/**');
+      console.log('PASS simulated form payload at ' + width + 'px ' + label);
      }
      console.log('PASS ' + width + 'px ' + label);
     } catch (error) {
