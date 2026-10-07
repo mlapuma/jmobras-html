@@ -896,3 +896,11 @@ details p { margin-top: 14px; }
 @media (max-width: 840px) { .nav-links { gap: 0; max-height: calc(100dvh - 110px); overflow-y: auto; } }
 @media (max-width: 640px) { .brand img { width: 150px; } .detail-cta { padding: 20px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* Consistent standalone pages and lightweight contact shortcut */
+.section h1 { color: var(--navy); font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.12; }
+.section-heading h1 { text-align: center; }
+.whatsapp-float { background: #087f45; color: #fff; }
+.whatsapp-float:hover, .whatsapp-float:focus-visible { background: #066437; }
+.whatsapp-float svg { width: 36px; height: 36px; }
+.form-note { line-height: 1.5; }
