@@ -904,3 +904,15 @@ details p { margin-top: 14px; }
 .whatsapp-float:hover, .whatsapp-float:focus-visible { background: #066437; }
 .whatsapp-float svg { width: 36px; height: 36px; }
 .form-note { line-height: 1.5; }
+
+/* Compact header: display the visible horizontal mark inside its square file. */
+.brand { padding: 0; width: 190px; flex: 0 0 190px; }
+.brand img { width: 190px; height: 48px; object-fit: cover; object-position: center 48.5%; filter: brightness(0) invert(1); }
+.footer-logo { width: 170px; height: 50px; object-fit: cover; object-position: center 48.5%; filter: brightness(0) invert(1); }
+.nav { min-height: 76px; }
+.stats-grid strong { font-size: clamp(1.1rem, 2vw, 1.5rem); line-height: 1.2; overflow-wrap: anywhere; }
+@media (max-width: 840px) {
+ .nav-links { top: calc(100% + 6px); }
+ .brand { width: 160px; flex-basis: 160px; }
+ .brand img { width: 160px; height: 44px; }
+}
