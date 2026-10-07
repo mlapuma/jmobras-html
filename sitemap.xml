@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <url>
-      <loc>https://www.jmobras.com.br/</loc>
-      <priority>1.0</priority>
-   </url>
-   <url>
-      <loc>https://www.jmobras.com.br/about.html</loc>
-      <priority>0.7</priority>
-   </url>
-   <url>
-      <loc>https://www.jmobras.com.br/services.html</loc>
-      <priority>0.8</priority>
-   </url>
-   <url>
-      <loc>https://www.jmobras.com.br/news.html</loc>
-      <priority>0.6</priority>
-   </url>
-   <url>
-      <loc>https://www.jmobras.com.br/contact.html</loc>
-      <priority>0.7</priority>
-   </url>
+  <url><loc>https://www.jmobras.com.br/</loc></url>
+  <url><loc>https://www.jmobras.com.br/about.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/services.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/contact.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/news.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/pintura-predial.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/lavagem-predial.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/manutencao-predial.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/manutencao-geral.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/reformas.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/conservacao-fachadas.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/como-conservar-fachada.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/quando-fazer-pintura-predial.html</loc></url>
+  <url><loc>https://www.jmobras.com.br/beneficios-lavagem-predial.html</loc></url>
 </urlset>
