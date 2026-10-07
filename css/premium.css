@@ -916,3 +916,8 @@ details p { margin-top: 14px; }
  .brand { width: 160px; flex-basis: 160px; }
  .brand img { width: 160px; height: 44px; }
 }
+
+/* Keep the current page visible alongside keyboard focus. */
+.nav-links a[aria-current="page"]:not(.btn)::after { width: 100%; }
+.nav-links a[aria-current="page"]:not(.btn) { color: var(--accent); }
+.menu-toggle { cursor: pointer; }
