@@ -22,7 +22,19 @@ if (toggle && menu) {
   toggle.setAttribute('aria-label', 'Fechar menu');
   if (links.length) links[0].focus();
  });
- links.forEach(link => link.addEventListener('click', () => closeMenu()));
+ links.forEach(link => link.addEventListener('click', () => {
+  const wasOpen = isOpen();
+  closeMenu();
+  const destination = new URL(link.href, window.location.href);
+  if (!wasOpen || destination.origin !== location.origin ||
+      destination.pathname.replace(/\/index\.html$/, '/') !==
+      location.pathname.replace(/\/index\.html$/, '/') || !destination.hash) return;
+  const target = document.getElementById(decodeURIComponent(destination.hash.slice(1)));
+  if (target) {
+   if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+   target.focus({ preventScroll: true });
+  }
+ }));
  document.addEventListener('keydown', event => {
   if (!isOpen() || desktop.matches) return;
   if (event.key === 'Escape') {

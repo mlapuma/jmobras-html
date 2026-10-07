@@ -49,6 +49,8 @@ async function verifyMenu(page, width) {
  await toggle.click();
  await links.first().click();
  assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+ assert.equal(await page.evaluate(() => document.activeElement.id), 'topo',
+  'Same-page menu link must focus its destination after closing');
 }
 
 (async () => {
