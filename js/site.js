@@ -1,6 +1,9 @@
 const toggle = document.querySelector('.menu-toggle');
 const menu = document.querySelector('.nav-links');
 if (toggle && menu) {
+ const desktop = window.matchMedia('(min-width: 841px)');
+ const links = Array.from(menu.querySelectorAll('a'));
+ const isOpen = () => menu.classList.contains('is-open');
  const closeMenu = (restoreFocus = false) => {
   menu.classList.remove('is-open');
   document.body.classList.remove('menu-open');
@@ -9,14 +12,40 @@ if (toggle && menu) {
   if (restoreFocus) toggle.focus();
  };
  toggle.addEventListener('click', () => {
-  const open = menu.classList.toggle('is-open');
-  document.body.classList.toggle('menu-open', open);
-  toggle.setAttribute('aria-expanded', String(open));
-  toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
+  if (isOpen()) {
+   closeMenu();
+   return;
+  }
+  menu.classList.add('is-open');
+  document.body.classList.add('menu-open');
+  toggle.setAttribute('aria-expanded', 'true');
+  toggle.setAttribute('aria-label', 'Fechar menu');
+  if (links.length) links[0].focus();
  });
- menu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
- document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(true); });
- document.addEventListener('click', event => { if (!event.target.closest('.nav')) closeMenu(); });
- const desktop = window.matchMedia('(min-width: 841px)');
+ links.forEach(link => link.addEventListener('click', () => closeMenu()));
+ document.addEventListener('keydown', event => {
+  if (!isOpen() || desktop.matches) return;
+  if (event.key === 'Escape') {
+   event.preventDefault();
+   closeMenu(true);
+   return;
+  }
+  if (event.key !== 'Tab') return;
+  const first = toggle;
+  const last = links[links.length - 1] || toggle;
+  if (event.shiftKey && document.activeElement === first) {
+   event.preventDefault();
+   last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+   event.preventDefault();
+   first.focus();
+  }
+ });
+ document.addEventListener('click', event => {
+  if (isOpen() && !event.target.closest('.nav')) closeMenu();
+ });
+ document.addEventListener('focusin', event => {
+  if (isOpen() && !event.target.closest('.nav')) closeMenu();
+ });
  desktop.addEventListener('change', event => { if (event.matches) closeMenu(); });
 }
