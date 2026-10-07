@@ -921,3 +921,15 @@ details p { margin-top: 14px; }
 .nav-links a[aria-current="page"]:not(.btn)::after { width: 100%; }
 .nav-links a[aria-current="page"]:not(.btn) { color: var(--accent); }
 .menu-toggle { cursor: pointer; }
+
+/* Licensed visual references, clearly separated from completed work. */
+.illustrative-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+.illustrative-grid figure { margin: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
+.illustrative-grid img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.illustrative-grid figcaption { padding: 24px; }
+.illustrative-grid h3 { margin: 14px 0 10px; color: var(--navy); }
+.illustrative-grid figcaption > a { font-weight: 800; text-decoration: underline; text-underline-offset: 3px; }
+.illustrative-grid small { display: block; margin-top: 20px; color: var(--steel); }
+.illustrative-grid small a { text-decoration: underline; }
+.illustrative-label { display: inline-block; padding: 5px 10px; border-radius: 4px; background: var(--paper); color: var(--navy); font-size: .8rem; font-weight: 800; }
+@media (max-width: 640px) { .illustrative-grid { grid-template-columns: 1fr; } }

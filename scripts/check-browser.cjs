@@ -75,6 +75,15 @@ async function verifyMenu(page, width) {
      if (!pathname) {
       await page.screenshot({ path: path.join(screenshots, 'home-' + width + '.png') });
       await verifyMenu(page, width);
+      const references = page.locator('#referencias');
+      assert.equal(await references.locator('figure').count(), 2);
+      for (const img of await references.locator('img').all()) {
+       await img.scrollIntoViewIfNeeded();
+       await img.evaluate(el => el.decode());
+       assert.ok(await img.evaluate(el => el.naturalWidth > 0), 'Illustrative image failed to load');
+      }
+      assert.equal(await references.locator('.illustrative-label').count(), 2);
+      await references.screenshot({ path: path.join(screenshots, 'references-' + width + '.png') });
      }
      if (pathname === 'contact.html' || !pathname) {
       const requests = [];
