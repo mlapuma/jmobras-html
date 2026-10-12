@@ -933,3 +933,12 @@ details p { margin-top: 14px; }
 .illustrative-grid small a { text-decoration: underline; }
 .illustrative-label { display: inline-block; padding: 5px 10px; border-radius: 4px; background: var(--paper); color: var(--navy); font-size: .8rem; font-weight: 800; }
 @media (max-width: 640px) { .illustrative-grid { grid-template-columns: 1fr; } }
+
+/* Renderização progressiva das seções abaixo da primeira dobra. */
+@supports (content-visibility: auto) {
+  main > .section:not(.hero) { content-visibility: auto; contain-intrinsic-size: auto 650px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
