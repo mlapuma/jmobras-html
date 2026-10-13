@@ -21,7 +21,7 @@ jobs:
       - name: Auditoria mobile
         run: lighthouse https://www.jmobras.com.br/ --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --preset=perf --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output=html --output-path=./lighthouse-mobile --quiet
       - name: Auditoria desktop
-        if: success()
+        if: always()
         run: lighthouse https://www.jmobras.com.br/ --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --preset=desktop --output=json --output=html --output-path=./lighthouse-desktop --quiet
       - name: Resumo das pontuações
         if: always()
@@ -30,7 +30,7 @@ jobs:
           const fs = require('node:fs');
           for (const device of ['mobile','desktop']) {
             const file = 'lighthouse-' + device + '.report.json';
-            if (!fs.existsSync(file)) continue;
+            if (!fs.existsSync(file)) { console.error('Relatório ausente: '+file); process.exitCode=1; continue; }
             const report = JSON.parse(fs.readFileSync(file,'utf8'));
             const score = Math.round((report.categories.performance.score || 0)*100);
             console.log(device + ': desempenho ' + score + '/100');
@@ -47,4 +47,4 @@ jobs:
         with:
           name: auditoria-lighthouse
           path: lighthouse-*.report.*
-          if-no-files-found: warn
+          if-no-files-found: error
