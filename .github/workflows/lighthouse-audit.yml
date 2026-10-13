@@ -1,0 +1,50 @@
+name: Auditoria PageSpeed mobile e desktop
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 12 * * 2'
+permissions:
+  contents: read
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Instalar Lighthouse
+        run: npm install --global lighthouse@12
+      - name: Preparar navegador
+        run: echo "CHROME_PATH=$(which google-chrome || which chromium || which chromium-browser)" >> "$GITHUB_ENV"
+      - name: Auditoria mobile
+        run: lighthouse https://www.jmobras.com.br/ --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --preset=perf --form-factor=mobile --screenEmulation.mobile=true --throttling-method=simulate --output=json --output=html --output-path=./lighthouse-mobile --quiet
+      - name: Auditoria desktop
+        if: success()
+        run: lighthouse https://www.jmobras.com.br/ --chrome-flags="--headless --no-sandbox --disable-dev-shm-usage" --preset=desktop --output=json --output=html --output-path=./lighthouse-desktop --quiet
+      - name: Resumo das pontuações
+        if: always()
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          for (const device of ['mobile','desktop']) {
+            const file = 'lighthouse-' + device + '.report.json';
+            if (!fs.existsSync(file)) continue;
+            const report = JSON.parse(fs.readFileSync(file,'utf8'));
+            const score = Math.round((report.categories.performance.score || 0)*100);
+            console.log(device + ': desempenho ' + score + '/100');
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '### ' + device + ': ' + score + '/100\n\n');
+            for (const id of ['first-contentful-paint','largest-contentful-paint','speed-index','total-blocking-time','cumulative-layout-shift']) {
+              const a = report.audits[id];
+              if(a) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, '- '+a.title+': '+a.displayValue+'\n');
+            }
+          }
+          NODE
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-lighthouse
+          path: lighthouse-*.report.*
+          if-no-files-found: warn
