@@ -16,3 +16,6 @@ jobs:
           node-version: '22'
       - name: Validar páginas e SEO
         run: node scripts/smoke-test.cjs
+      - name: Verificar ambiente de produção
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: node scripts/production-check.cjs
