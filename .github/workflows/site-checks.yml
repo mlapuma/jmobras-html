@@ -16,6 +16,15 @@ jobs:
           node-version: '22'
       - name: Validar páginas e SEO
         run: node scripts/smoke-test.cjs
+      - name: Gerar auditoria técnica de SEO
+        run: node scripts/seo-audit.cjs
+      - name: Publicar relatório de SEO
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditoria-seo
+          path: reports/seo-audit.md
+          if-no-files-found: warn
       - name: Verificar ambiente de produção
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
         run: node scripts/production-check.cjs
