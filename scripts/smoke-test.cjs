@@ -12,7 +12,10 @@ for (const path of urls) {
   const html = read(file);
   assert(/<title>[^<]+<\/title>/i.test(html), 'Título ausente: ' + file);
   assert(/<meta name="description"/i.test(html), 'Descrição ausente: ' + file);
-  assert(/rel="canonical"/i.test(html), 'Canonical ausente: ' + file);
+  const canonical = html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i);
+  assert(canonical, 'Canonical ausente: ' + file);
+  assert.equal(canonical[1], 'https://www.jmobras.com.br/' + path, 'Canonical divergente: ' + file);
+  assert(!/<meta\s+name="robots"\s+content="[^"]*noindex/i.test(html), 'Página bloqueada para indexação: ' + file);
 }
 const home = read('index.html');
 for (const asset of ['css/premium.css','js/site.js','images/logoJMObras.png','images/services/pintura-predial.jpg']) {
